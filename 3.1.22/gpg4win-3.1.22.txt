@@ -1,1 +1,322 @@
+﻿
+                    Gpg4Win - Version 3.1.22 (de)
+                     - Veit Berwig 20.06.2022 -
 
+     Der Quellcode dieser Version von "Gpg4Win 3.1.22" ist zu ...
+      
+                                99,9%
+
+   ... mit dem Quellcode von "GnuPG VS-Desktop 3.1.22" identisch !!
+
+
+          Die Unterschiede werden hier im Detail erläutert:
+         ===================================================
+
+
+                           Das Build-System
+                          ==================
+                    
+Das System, auf welchem der Quellcode in das NSIS-Installer Paket
+"Gpg4Win 3.1.22" übersetzt wurde, ist ein "Debian Bullseye" 11.3
+Live-System mit einem auf einem NTFS residierenden "Veracrypt"-
+Kontainer, der mit einem ext3-Dateisystem formattiert wurde, um die
+Persistenz für den Build-Prozess zu gewährleisten. Das Debian-System
+befindet sich auf dem jeweiligen aktuellen Update-Stand.
+
+Das Live-System wurde von allen nicht notwendigen Softwarepaketen
+bereinig. Zur Laufzeit werden alle zur Übersetzung von "Gpg4Win"
+notwendigen Pakete "nachinstalliert". Ein automatisches Update der
+Paketverwaltung ist deaktiviert und ein Paket-Update wird nur währen
+des Prozesses zum "Remastering" des Live-Systems manuell in einer
+"chroot"-Umgebung umgesetzt.
+
+Nach JEDEM Neustart befindet sich das Live-System somit in dem zum
+Zeitpunkt des "Remastering" bestehenden definierten Systemzustand.
+
+
+           Änderungen am Quellcode, bzw. am Build-Framework
+          ==================================================
+
+Der Quellcode basiert zu 100% aus dem GnuPG-Git Checkout von
+"gpg4win.git" mit dem "tag" zur LTS-Version "gpg4win-3.1.22":
+
+  https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gpg4win.git;a=tree;h=refs/tags/gpg4win-3.1.22
+
+Download:
+
+  https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gpg4win.git;a=snapshot;h=refs/tags/gpg4win-3.1.22;sf=tgz
+
+Die Änderungen am Quellcode, bzw. am Build-System sind dadurch
+begründet, dass das Debian-System neuere MinGW-Compiler-Suiten
+verwendet, die das "dwarf2" (dw2) 32-Bit Exception-Handling umsetzen
+und nicht mehr das "setjmp-longjmp" (sjlj) Exception-Handling.
+
+  Details sind nachzulesen in Debian Bullseye unter:
+  
+  "/usr/share/doc/gcc-mingw-w64-base/NEWS.Debian.gz"
+    ... und unter ...
+  https://dev.gnupg.org/T5460
+    ... und in ...
+  https://fedoraproject.org/wiki/Changes/Mingw32GccDwarf2
+  
+Die Folge ist, dass nicht die Datei "libgcc_s_sjlj-1.dll" 
+(libgcc_s_sjlj-1.dll-x) vom Build-System erzeugt wird, sondern die
+Datei "libgcc_s_dw2-1.dll" (libgcc_s_dw2-1.dll-x).
+
+- Insofern ist eine Anpassung der Datei "inst-gpg4win.nsi" unter dem
+  Verzeichnis "src" notwendig geworden.
+
+- Die Datei "packages.3" im Verzeichnis "packages" wurde aktualisiert
+  und an die Version von "GnuPG VS Desktop" angepasst, damit die
+  aktuellen Pakete für GnuPG, insbesondere die letzte aktuelle Version
+  "...2.2.35_20220502..." als Paket eingebunden werden kann. Das
+  entspricht zu 100% der aktuellen Umsetzung in dem Paket
+  "GnuPG VS Desktop 3.1.22".
+
+- Insofern entspricht auch der Integrierte NSIS-Installer für
+  GnuPG 2.2.35 (gnupg-w32-2.2.35_20220502-bin.exe) vom 02.05.2022
+  1:1 dem integrierten GnuPG-Installer inklusive digitaler Signatur
+  für GnuPG 2.2.35.
+
+- Um den irreführenden Namens-Zusatz "-unknown" im Paketnamen und im
+  Versions-Infostring zu entfernen, wurde die Variable "tmp" in der
+  Datei "autogen.sh" zurückgesetzt.
+  
+- Es wurde ein vorgezogener Patch aus dem MASTER-branch integriert,
+  um einen Absturz-Fehler von "kleopatra" in der Version 3.1.22 zu
+  beheben. Quelle: https://dev.gnupg.org/T5962
+  Ich habe das deswegen umgesetzt, da dieser Fehler sich sehr störend
+  auswirken kann. Der Quellcode wurde mit 2 Dateien unter ...
+  
+  "patches/kconfigwidgets/0001-Fix-crash-on-exit-on-Windows.patch"
+  "patches/kconfigwidgets/0001-Fix-crash-on-exit-on-Windows.patch-next"
+  
+  ... erweitert und die Datei "Makefile.am" wurde entsprechend
+  angepasst. Relevant ist hier nur die Datei:
+  
+  "0001-Fix-crash-on-exit-on-Windows.patch"
+
+
+         Übereinstimmungen in der auführbaren Binär-Version
+        ====================================================
+
+- Das Installer-Paket von GnuPG ist zu 100% mit dem Installer-Paket in
+  "GnuPG VS Desktop 3.1.22" identisch. Auch die digitiale Signatur von
+  GnuPG ist identisch.
+
+- Alle Eigenschaften des Paketes "GnuPG VS Desktop 3.1.22" entsprechen
+  zu 100% dieser Version "Gpg4Win 3.1.22".
+
+  Es folgen somit die entsprechenden Hinweise zu "GnuPG VS Desktop"
+  in der Version "3.1.22":
+
+  Hinweise an die Administrator(innen)
+  ====================================
+  Ein Fehler (CVE-2018-25032) in der verwendeten Bibliothek "zlib"
+  (zlib <=1.2.11) enthielt einen möglichen Angriffsvektor, falls ein
+  Angreifer Kontrolle über die zu verschlüsselnden Daten besass. Es
+  gibt keine bekannten Angriffe. Dennoch ist ein Update auf 3.1.22
+  insbesondere dann dringend notwendig, wenn zu verschlüsselnde Daten
+  aus nicht vertrauenswürdigen Quellen stammen.
+  (T5910) https://dev.gnupg.org/T5910
+  (T5880) https://dev.gnupg.org/T5880 (mit Hinweis von Werner)
+  
+  Neue Features
+  =============
+  
+  GUI (Kleopatra)
+  
+  - Das GnuPG Backend kann jetzt über eine Menüoption unter Extras
+    neu gestartet Werden.
+    (T5775) https://dev.gnupg.org/T5775
+  - In der erweiterten Schlüsselerstellung weist nun ein Tooltip auf
+    den Zweck von Unterschlüsseln hin.
+    (T5781) https://dev.gnupg.org/T5781
+  - In den Zertifikatsdetails kann der Fingerprint nun einfach ohne
+    Leerzeichen in die Zwischenablage kopiert werden.
+    (T5776) https://dev.gnupg.org/T5776
+  - Die Smartcard-Leser Einstellungen sind nun auf einer eigenen
+    Konfigurationsseite.
+    (T5857) https://dev.gnupg.org/T5857
+  - Es ist nun möglich den eigenen Schlüssel zurückzurufen.
+    (T5859) https://dev.gnupg.org/T5859
+  - Der Dialog zum Hinzufügen von Benutzerkennungen wurde überarbeitet
+    und akzeptiert nun auch Namen, die mit einer Zahl beginnen.
+    (T5916) https://dev.gnupg.org/T5916
+  - Es ist nun möglich eine minimale und maximale Gültigkeitsdauer für
+    Schlüssel zu konfigurieren.
+    (T5864) https://dev.gnupg.org/T5864
+  - Eine falsche Passphrase bei der symmetrischen Entschlüsselung
+    zeigt nun false Passphrase an und nicht nur fehlerhafter
+    Sitzungsschlüssel.
+    (T5406) https://dev.gnupg.org/T5406
+  - Unterstützung für S/MIME Zertifikate auf PKCS#15 Smartcards.
+  
+  Barrierfreiheit
+  
+  - OpenPGP und S/MIME Schlüsselerstellung sind nun für
+    Barrierefreiheit optimiert.
+    (T5832) https://dev.gnupg.org/T5832
+  - Die Tab-Leiste für verschiedene Zertifikatsansichten ist nun immer
+    sichtbar.
+    (T5841) https://dev.gnupg.org/T5841
+  - Die Zertifikatsliste kann nun mit den Pfeiltasten navigiert
+    werden, um sie zugänglicher für Tastatureingabe zu machen.
+    (T5841) https://dev.gnupg.org/T5841
+  - Leere Zellen in der Zertifikatsliste haben nun Screenreader
+    spezifische Anmerkungen, damit sie z.B. als: "kein Name" oder
+    "keine E-Mail" gelesen werden.
+    (T5841) https://dev.gnupg.org/T5841
+  - Schlüsselkennungen und Fingerabdrücke werden nun von Screenreadern
+    in Gruppen von vier Zeichen gelesen.
+    (T5841) https://dev.gnupg.org/T5841
+  - Der Dateiverschlüsselungsdialog wurde hinsichtlich
+    Barrierefreiheit optimiert.
+    (T5845) https://dev.gnupg.org/T5845
+  - Der Zertifikatsauswahl-Dialog, welcher aus dem "Datei verschlüsseln"
+    Dialog aufgerufen werden kann, wurde hinsichtlich der
+    Barrierefreiheit optimiert.
+    (T5876) https://dev.gnupg.org/T5876
+  - Der Dialog zum Hinzufügen von Benutzerkennungen wurde vollständig
+    auf Barrierefreiheit hin überarbeitet.
+    (T5916) https://dev.gnupg.org/T5916
+
+  Windows Explorer Add-In (GgpEX)
+  
+  - Es ist nun möglich das Standardkommando über die Windows Registry
+    zu konfigurieren.
+    (T5915) https://dev.gnupg.org/T5915
+
+  Backend (GnuPG)
+  
+  - Dreifache Geschwindigkeit beim Entschlüsseln grosser Dateien.
+    (T5820) https://dev.gnupg.org/T5820
+    Um diese Verbesserungen voll auszunutzen, sollte die
+    Kommandozeile verwendet werden.
+  - Neue Option "--require-compliance" um einen Fehler zu erzeugen,
+    wenn eine Operation nicht der Compliance Einstellung entsprach.
+  - Tar Archive unterstützen nun längere Dateinamen als MAX_PATH.
+    (T5754) https://dev.gnupg.org/T5754
+  - Unterstützung für GeNUA Smartcards.
+  - WKD Suche funktioniert nun auch mit DNS Servern welche SRV
+    Einträge nicht korrekt verarbeiten.
+    (T4729) https://dev.gnupg.org/T4729
+
+  Behobene Fehler
+  ===============
+  
+  GUI (Kleopatra)
+  
+  - Mehrere Stellen, an denen der Name der Anwendung klein geschrieben
+    wurde, sind angepasst worden.
+    (T5833) https://dev.gnupg.org/T5833
+  - Ein Absturz wurde behoben, der auftrat, wenn man eine Beglaubigung
+    zurückzurufen versuchte ohne einen Schlüssel gewählt zu haben.
+    (T5858) https://dev.gnupg.org/T5858
+  - Der Zertifikatsfilter für nicht beglaubigte Zertifikate zeigt nun
+    nicht mehr alle invaliden Zertifikate an, sondern nur die nicht
+    beglaubigten.
+    (T5850) https://dev.gnupg.org/T5850
+  - Das Erzwingen des Schlüsseltyps über die Konfiguration erzwingt
+    nun auch korrekte Schlüsselverwendungs-Einstellungen.
+    (T5856) https://dev.gnupg.org/T5856
+
+  Outlook Add-In (GgpOL)
+  
+  - Eine doppelte Speicherfreigabe wurde behoben, die zu Abstürzen
+    hätte führen können. Diese Speicherfreigabe war nicht als
+    Sicherheitsproblem ausnutzbar.
+
+  Engine (GnuPG)
+  
+  - Weitere nicht konforme Verschlüsselungsalgorithmen können nun im
+    Konformitätsmodus entschlüsselt werden.
+
+
+    Versionen der Komponenten
+    =========================
+    
+    Komponente Version Anmerkungen
+    ==================================================================
+    GnuPG      2.2.35  T5928
+                       https://dev.gnupg.org/T5928
+    Kleopatra  3.1.22  T5962 (fixed)
+                       https://dev.gnupg.org/T5962
+                       https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gpg4win.git;a=commit;h=afb3e1b8360cfdbbc6ec199560807e8fdd9b9fb1
+    GpgOL      2.5.3
+    GpgEX      1.0.9
+    Libgcrypt  1.8.9
+
+
+          Unterschiede in dieser auführbaren Binär-Version
+         ==================================================
+
+- Fehlerbehebung gegen den Absturz von "Kleopatra" bei Beendigung
+  (Crash on Exit on Windows).
+
+- Alle ausführbaren Dateien aus dem Umfeld von "kleopatra" sind gegen
+  die Bibliothek "libgcc_s_dw2-1.dll" gelinkt und nicht mehr gegen
+  "libgcc_s_sjlj-1.dll". Anstatt "libgcc_s_sjlj-1.dll" existiert also
+  "libgcc_s_dw2-1.dll".
+
+- Die ausführbare Datei der Schlüsselverwaltung "kleopatra.exe"
+  besitzt keine Digitale Signatur der Fa. G10 Code GmbH.
+
+- Das Paket "gpg4win-3.1.22.exe" wurde mit meinen OpenPGP Schlüssel
+  in einer abgesetzten Signatur signiert (gpg4win-3.1.22.exe.sig):
+  
+  Veit Berwig_0xCA018F09_public.asc:
+  ==================================
+  
+  -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+LFuVP5CNnFE=
+=YMN3
+-----END PGP PUBLIC KEY BLOCK-----
