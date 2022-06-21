@@ -2,11 +2,8 @@
                     Gpg4Win - Version 3.1.22 (de)
                      - Veit Berwig 20.06.2022 -
 
-     Der Quellcode dieser Version von "Gpg4Win 3.1.22" ist zu ...
-      
-                                99,9%
-
-   ... mit dem Quellcode von "GnuPG VS-Desktop 3.1.22" identisch !!
+        Der Quellcode dieser Version von "Gpg4Win 3.1.22" ist
+       identisch mit dem Quellcode von "GnuPG VS-Desktop 3.1.22".
 
 
           Die Unterschiede werden hier im Detail erläutert:
