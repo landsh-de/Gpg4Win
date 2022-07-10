@@ -6,7 +6,7 @@
       
                                 99,9%
 
-   ... mit dem Quellcode von "GnuPG VS-Desktop 3.1.23" identisch !!
+   ... mit dem Quellcode von "GnuPG VS-Desktop 3.1.23" identisch.
 
 
           Die Unterschiede werden hier im Detail erläutert:
@@ -26,7 +26,7 @@ befindet sich auf dem jeweiligen aktuellen Update-Stand.
 Das Live-System wurde von allen nicht notwendigen Softwarepaketen
 bereinig. Zur Laufzeit werden alle zur Übersetzung von "Gpg4Win"
 notwendigen Pakete "nachinstalliert". Ein automatisches Update der
-Paketverwaltung ist deaktiviert und ein Paket-Update wird nur währen
+Paketverwaltung ist deaktiviert und ein Paket-Update wird nur während
 des Prozesses zum "Remastering" des Live-Systems manuell in einer
 "chroot"-Umgebung umgesetzt.
 
